@@ -1,0 +1,3 @@
+debian/tests/test_modules
+fixture
+test.js

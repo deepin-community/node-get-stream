@@ -1,0 +1,49 @@
+node-get-stream (6.0.0-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Debian Janitor ]
+  * Set upstream metadata fields: Bug-Submit.
+
+  [ Xavier Guimard ]
+  * Bump debhelper compatibility level to 13
+  * Declare compliance with policy 4.5.1
+  * Modernize debian/watch
+  * Use dh-sequence-nodejs
+  * New upstream version 6.0.0 (Closes: #976657)
+  * Refresh patch
+
+ -- Xavier Guimard <yadd@debian.org>  Sun, 06 Dec 2020 18:18:37 +0100
+
+node-get-stream (4.1.0-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Debian Janitor ]
+  * Trim trailing whitespace.
+  * Use secure copyright file specification URI.
+  * Bump debhelper from old 9 to 12.
+  * Set debhelper-compat version in Build-Depends.
+  * Set upstream metadata fields: Bug-Database, Repository, Repository-
+    Browse.
+  * Update Vcs-* headers from URL redirect.
+  * Use canonical URL in Vcs-Git.
+
+  [ Xavier Guimard ]
+  * Declare compliance with policy 4.5.0
+  * Use pkg-js-tools auto install
+  * Add "Rules-Requires-Root: no"
+  * Change section to javascript
+  * Add debian/gbp.conf
+  * New upstream version 4.1.0
+  * Update copyright
+  * Add dependency to node-pump
+  * Enable upstream test using tape instead of ava
+
+ -- Xavier Guimard <yadd@debian.org>  Sat, 07 Mar 2020 13:14:24 +0100
+
+node-get-stream (3.0.0-1) unstable; urgency=low
+
+  * Initial release (Closes: #845514)
+
+ -- Pirate Praveen <praveen@debian.org>  Thu, 24 Nov 2016 12:20:27 +0530

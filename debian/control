@@ -1,0 +1,25 @@
+Source: node-get-stream
+Section: javascript
+Priority: optional
+Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
+Uploaders: Pirate Praveen <praveen@debian.org>
+Build-Depends: debhelper-compat (= 13)
+ , node-from2 <!nocheck>
+ , node-p-is-promise <!nocheck>
+ , node-pump <!nocheck>
+ , node-tape <!nocheck>
+ , dh-sequence-nodejs
+Standards-Version: 4.5.1
+Vcs-Browser: https://salsa.debian.org/js-team/node-get-stream
+Vcs-Git: https://salsa.debian.org/js-team/node-get-stream.git
+Homepage: https://github.com/sindresorhus/get-stream
+Testsuite: autopkgtest-pkg-nodejs
+Rules-Requires-Root: no
+
+Package: node-get-stream
+Architecture: all
+Depends: ${misc:Depends}
+ , node-pump
+ , nodejs
+Description: Get a stream as a string, buffer, or array
+ Node.js is an event-based server-side JavaScript engine.
