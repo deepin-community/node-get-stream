@@ -1,3 +1,14 @@
+node-get-stream (6.0.1-1) unstable; urgency=medium
+
+  * Team upload
+  * Fix GitHub tags regex
+  * Update standards version to 4.6.0, no changes needed.
+  * Fix filenamemangle
+  * Drop dependency to nodejs
+  * New upstream version 6.0.1
+
+ -- Yadd <yadd@debian.org>  Wed, 24 Nov 2021 18:11:52 +0100
+
 node-get-stream (6.0.0-1) unstable; urgency=medium
 
   * Team upload
