@@ -1,0 +1,50 @@
+From: =?utf-8?q?Bastien_Roucari=C3=A8s?= <rouca@debian.org>
+Date: Wed, 1 Nov 2023 22:44:43 +0000
+Subject: Do not depends on extra package for test
+
+forwarded: not-needed
+---
+ package.json  | 1 -
+ test/array.js | 6 ++++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/package.json b/package.json
+index bfd9a00..3acb44a 100644
+--- a/package.json
++++ b/package.json
+@@ -46,7 +46,6 @@
+ 		"@types/node": "^20.5.0",
+ 		"ava": "^5.3.1",
+ 		"precise-now": "^2.0.0",
+-		"stream-json": "^1.8.0",
+ 		"tsd": "^0.28.1",
+ 		"xo": "^0.56.0"
+ 	}
+diff --git a/test/array.js b/test/array.js
+index 5d169dc..fa4b7e9 100644
+--- a/test/array.js
++++ b/test/array.js
+@@ -1,7 +1,7 @@
+ import {compose} from 'node:stream';
+ import test from 'ava';
+-import streamJson from 'stream-json';
+-import streamJsonArray from 'stream-json/streamers/StreamArray.js';
++//import streamJson from 'stream-json';
++//import streamJsonArray from 'stream-json/streamers/StreamArray.js';
+ import {getStreamAsArray, MaxBufferError} from '../source/index.js';
+ import {createStream, BIG_TEST_DURATION} from './helpers/index.js';
+ import {
+@@ -95,6 +95,7 @@ test('getStreamAsArray() behaves like readable.toArray()', async t => {
+ 	t.deepEqual(nativeResult, customResult);
+ });
+ 
++/*
+ test('getStreamAsArray() can stream JSON', async t => {
+ 	t.timeout(BIG_TEST_DURATION);
+ 	const bigJson = bigArray.map(byte => ({byte}));
+@@ -107,3 +108,4 @@ test('getStreamAsArray() can stream JSON', async t => {
+ 	t.is(result.length, bigJson.length);
+ 	t.deepEqual(result.at(-1).value, bigJson.at(-1));
+ });
++*/
+\ No newline at end of file

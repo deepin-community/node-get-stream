@@ -1,0 +1,16 @@
+Description: workaround for ts-node/register
+ else node-clipanion test fails
+Author: Yadd <yadd@debian.org>
+Forwarded: not-needed
+Last-Update: 2024-04-26
+
+--- a/package.json
++++ b/package.json
+@@ -15,6 +15,7 @@
+ 		"types": "./source/index.d.ts",
+ 		"import": "./source/index.js"
+ 	},
++	"types": "./source/index.d.ts",
+ 	"engines": {
+ 		"node": ">=16"
+ 	},

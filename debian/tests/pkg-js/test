@@ -1,1 +1,2 @@
-NODE_PATH=debian/tests/test_modules tape test.js
+test -d source || ln -s /usr/share/nodejs/node-get-stream/source source
+ava -c 1 -s  --no-worker-threads test/*
