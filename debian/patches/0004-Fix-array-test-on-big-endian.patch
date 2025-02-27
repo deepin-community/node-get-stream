@@ -1,0 +1,158 @@
+From: =?utf-8?q?Bastien_Roucari=C3=A8s?= <rouca@debian.org>
+Date: Sat, 4 Nov 2023 11:59:19 +0000
+Subject: Fix array test on big endian
+
+forwarded: https://github.com/emilsivervik/get-buffer/issues/3
+---
+ test/array-buffer.js | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+Index: node-get-stream/test/array-buffer.js
+===================================================================
+--- node-get-stream.orig/test/array-buffer.js
++++ node-get-stream/test/array-buffer.js
+@@ -1,6 +1,7 @@
+ import {Buffer, constants as BufferConstants, Blob} from 'node:buffer';
+ import {arrayBuffer, blob} from 'node:stream/consumers';
+ import test from 'ava';
++import os from 'node:os';
+ import {getStreamAsArrayBuffer, MaxBufferError} from '../source/index.js';
+ import {createStream, BIG_TEST_DURATION} from './helpers/index.js';
+ import {
+@@ -32,14 +33,30 @@ const fixtureMultibyteUint16Array = new
+ const longMultibyteUint16Array = new Uint16Array([0, 0, 0]);
+ const bigArrayBuffer = new Uint8Array(bigArray).buffer;
+ 
++const bigendian = (os.endianness() == 'BE');
++
+ const setupArrayBuffer = (streamDef, options) => getStreamAsArrayBuffer(createStream(streamDef), options);
+ 
++const setupArrayBufferEndian = (streamDef, options) =>
++  bigendian ? getStreamAsArrayBuffer(createStream(streamDef), options).swap16() : getStreamAsArrayBuffer(createStream(streamDef), options);
++
+ const getStreamToArrayBuffer = async (t, fixtureValue) => {
+ 	const result = await setupArrayBuffer(fixtureValue);
+ 	t.true(result instanceof ArrayBuffer);
+ 	t.true(Buffer.from(result).equals(fixtureBuffer));
+ };
+ 
++const getStreamToArrayBufferEndian = async (t, fixtureValue) => {
++	const result = await setupArrayBuffer(fixtureValue);
++	t.true(result instanceof ArrayBuffer);
++	if(!bigendian) {
++		t.true(Buffer.from(result).equals(fixtureBuffer));
++	}
++	else {
++		t.true(Buffer.from(result).swap16().equals(fixtureBuffer));
++	}
++};
++
+ test('get stream from string to arrayBuffer, with a single chunk', getStreamToArrayBuffer, [fixtureString]);
+ test('get stream from buffer to arrayBuffer, with a single chunk', getStreamToArrayBuffer, [fixtureBuffer]);
+ test('get stream from arrayBuffer to arrayBuffer, with a single chunk', getStreamToArrayBuffer, [fixtureArrayBuffer]);
+@@ -54,7 +71,7 @@ test('get stream from string to arrayBuf
+ test('get stream from buffer to arrayBuffer, with multiple chunks', getStreamToArrayBuffer, fixtureMultiBuffer);
+ test('get stream from arrayBuffer to arrayBuffer, with multiple chunks', getStreamToArrayBuffer, fixtureMultiArrayBuffer);
+ test('get stream from typedArray to arrayBuffer, with multiple chunks', getStreamToArrayBuffer, fixtureMultiTypedArray);
+-test('get stream from uint16Array to arrayBuffer, with multiple chunks', getStreamToArrayBuffer, fixtureMultiUint16Array);
++test('get stream from uint16Array to arrayBuffer, with multiple chunks', getStreamToArrayBufferEndian, fixtureMultiUint16Array);
+ test('get stream from dataView to arrayBuffer, with multiple chunks', getStreamToArrayBuffer, fixtureMultiDataView);
+ 
+ const throwOnInvalidChunkType = async (t, fixtureValue) => {
+Index: node-get-stream/test/buffer.js
+===================================================================
+--- node-get-stream.orig/test/buffer.js
++++ node-get-stream/test/buffer.js
+@@ -1,5 +1,6 @@
+ import {Buffer} from 'node:buffer';
+ import {buffer} from 'node:stream/consumers';
++import os from 'node:os';
+ import test from 'ava';
+ import {getStreamAsBuffer, MaxBufferError} from '../source/index.js';
+ import {createStream} from './helpers/index.js';
+@@ -31,6 +32,8 @@ const fixtureMultibyteBuffer = Buffer.fr
+ const longMultibyteBuffer = Buffer.from(longMultibyteString);
+ const bigBuffer = Buffer.from(bigArray);
+ 
++const bigendian = (os.endianness() == 'BE');
++
+ const setupBuffer = (streamDef, options) => getStreamAsBuffer(createStream(streamDef), options);
+ 
+ const getStreamToBuffer = async (t, fixtureValue) => {
+@@ -39,6 +42,18 @@ const getStreamToBuffer = async (t, fixt
+ 	t.true(result.equals(fixtureBuffer));
+ };
+ 
++const getStreamToBufferEndian = async (t, fixtureValue) => {
++	const result = await setupBuffer(fixtureValue);
++	t.true(Buffer.isBuffer(result));
++	if(bigendian === false) {
++		t.true(result.equals(fixtureBuffer));
++	} else {
++		t.true(result.swap16().equals(fixtureBuffer));
++	}
++};
++
++
++
+ test('get stream from string to buffer, with a single chunk', getStreamToBuffer, [fixtureString]);
+ test('get stream from buffer to buffer, with a single chunk', getStreamToBuffer, [fixtureBuffer]);
+ test('get stream from arrayBuffer to buffer, with a single chunk', getStreamToBuffer, [fixtureArrayBuffer]);
+@@ -53,7 +68,7 @@ test('get stream from string to buffer,
+ test('get stream from buffer to buffer, with multiple chunks', getStreamToBuffer, fixtureMultiBuffer);
+ test('get stream from arrayBuffer to buffer, with multiple chunks', getStreamToBuffer, fixtureMultiArrayBuffer);
+ test('get stream from typedArray to buffer, with multiple chunks', getStreamToBuffer, fixtureMultiTypedArray);
+-test('get stream from uint16Array to buffer, with multiple chunks', getStreamToBuffer, fixtureMultiUint16Array);
++test('get stream from uint16Array to buffer, with multiple chunks', getStreamToBufferEndian, fixtureMultiUint16Array);
+ test('get stream from dataView to buffer, with multiple chunks', getStreamToBuffer, fixtureMultiDataView);
+ 
+ const throwOnInvalidChunkType = async (t, fixtureValue) => {
+Index: node-get-stream/test/string.js
+===================================================================
+--- node-get-stream.orig/test/string.js
++++ node-get-stream/test/string.js
+@@ -1,5 +1,6 @@
+ import {Buffer, constants as BufferConstants} from 'node:buffer';
+ import {text} from 'node:stream/consumers';
++import os from 'node:os';
+ import test from 'ava';
+ import getStream, {MaxBufferError} from '../source/index.js';
+ import {createStream, BIG_TEST_DURATION} from './helpers/index.js';
+@@ -26,6 +27,8 @@ import {
+ 	bigArray,
+ } from './fixtures/index.js';
+ 
++const bigendian = (os.endianness() == 'BE');
++
+ const bigString = Buffer.from(bigArray).toString();
+ const multiByteString = 'a\u1000';
+ const multiByteUint8Array = new TextEncoder().encode(multiByteString);
+@@ -40,6 +43,19 @@ const getStreamToString = async (t, fixt
+ 	t.is(result, fixtureString);
+ };
+ 
++const getStreamToStringEndian = async (t, fixtureValue) => {
++	const result = await setupString(fixtureValue);
++	t.is(typeof result, 'string');
++	if(bigendian === false) {
++		t.is(result, fixtureString);
++	} else {
++		const b = new Buffer(result).swap16().toString();
++		const bref = new Buffer(fixtureString).toString();
++		t.is(b,bref);
++	}
++};
++
++
+ test('get stream from string to string, with a single chunk', getStreamToString, [fixtureString]);
+ test('get stream from buffer to string, with a single chunk', getStreamToString, [fixtureBuffer]);
+ test('get stream from arrayBuffer to string, with a single chunk', getStreamToString, [fixtureArrayBuffer]);
+@@ -54,7 +70,7 @@ test('get stream from string to string,
+ test('get stream from buffer to string, with multiple chunks', getStreamToString, fixtureMultiBuffer);
+ test('get stream from arrayBuffer to string, with multiple chunks', getStreamToString, fixtureMultiArrayBuffer);
+ test('get stream from typedArray to string, with multiple chunks', getStreamToString, fixtureMultiTypedArray);
+-test('get stream from uint16Array to string, with multiple chunks', getStreamToString, fixtureMultiUint16Array);
++test('get stream from uint16Array to string, with multiple chunks', getStreamToStringEndian, fixtureMultiUint16Array);
+ test('get stream from dataView to string, with multiple chunks', getStreamToString, fixtureMultiDataView);
+ 
+ const throwOnInvalidChunkType = async (t, setupFunction, fixtureValue) => {

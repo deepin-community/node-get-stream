@@ -1,0 +1,22 @@
+From: =?utf-8?q?Bastien_Roucari=C3=A8s?= <rouca@debian.org>
+Date: Fri, 3 Nov 2023 22:21:50 +0000
+Subject: Replace default type of export by import
+
+Forwarded: not-needed
+---
+ package.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/package.json b/package.json
+index 3acb44a..5761b87 100644
+--- a/package.json
++++ b/package.json
+@@ -13,7 +13,7 @@
+ 	"type": "module",
+ 	"exports": {
+ 		"types": "./source/index.d.ts",
+-		"default": "./source/index.js"
++		"import": "./source/index.js"
+ 	},
+ 	"engines": {
+ 		"node": ">=16"

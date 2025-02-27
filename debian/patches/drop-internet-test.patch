@@ -1,0 +1,23 @@
+Description: drop one test that needs Internet
+Author: Yadd <yadd@debian.org>
+Bug-Debian: https://bugs.debian.org/1056286
+Forwarded: not-needed
+Last-Update: 2023-11-21
+
+--- a/test/integration.js
++++ b/test/integration.js
+@@ -62,12 +62,14 @@
+ 	test('works with readableWebStream({ type: undefined })', readableWebStream, undefined);
+ 	test('works with readableWebStream({ type: "bytes" })', readableWebStream, 'bytes');
+ 
++  /*
+ 	test('works with fetch()', async t => {
+ 		const {body} = await fetch(TEST_URL);
+ 		const result = await getStream(body);
+ 		const parsedResult = JSON.parse(result);
+ 		t.true(Array.isArray(parsedResult));
+ 	});
++  */
+ 
+ 	test('can use TextDecoderStream', async t => {
+ 		const textDecoderStream = new TextDecoderStream('utf-16le');

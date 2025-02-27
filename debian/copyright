@@ -2,6 +2,7 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: get-stream
 Upstream-Contact: https://github.com/sindresorhus/get-stream/issues
 Source: https://github.com/sindresorhus/get-stream#readme
+ https://github.com/uhop/stream-json/tags
 
 Files: *
 Copyright: Sindre Sorhus <sindresorhus@gmail.com>

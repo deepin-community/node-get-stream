@@ -1,1 +1,6 @@
-switch-test-from-ava-to-tape.diff
+0001-Do-not-depends-on-extra-package-for-test.patch
+0002-Disable-test-that-fail-with-memory-limited-like-auto.patch
+0003-Replace-default-type-of-export-by-import.patch
+0004-Fix-array-test-on-big-endian.patch
+drop-internet-test.patch
+0005-export-types.patch
